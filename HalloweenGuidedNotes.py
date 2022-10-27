@@ -8,6 +8,42 @@ class House:
     def getRating(self):
         return self.rating
 
+    
+def greedyPath(m, num):
+    bestHouses = []
+    #sort the houses in terms of best to worst
+    
+
+    #try to add coordinates to the path
+    #if the path were to get stuck or be 'unfinished' in anyway, try again
+    #using a new starting position
+    #return once a fair path is generated
+    #if no fair path found, return list of zeros as coordinates
+    for i in range(num):
+        p = []
+
+
+
+        #keep track of the value of the path
+        #pick the next best house to start with
+
+
+        #add neighbors to the path after comparing to see which neighbor is best
+        for i in range(num - 1):
+            #check to see if we are stuck. If we get stuck, break
+
+
+            
+            #check all possible neighbors. Choose the best neighbor
+            #add it to the path and add to the value
+
+
+
+            #if path is complete, return path and path value
+
+
+                return pVal, p
+
 def randPath(m, num):
     #create an empty path
     p = []
@@ -49,6 +85,15 @@ def main():
 
     num = int(input("How many houses?\n"))
 
+    
+    ''' Greedy Path Call '''
+    pVal, p = greedyPath(m, num)
+
+    print(p)
+
+
+
+    ''' Random Path Call '''
     #calculate the average rating of a house in the neighborhood
 
     
