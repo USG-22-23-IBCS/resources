@@ -36,6 +36,12 @@ class Node:
     def color(self, c):
         self.C.setFill(c)
 
+    def printNeighbors(self):
+        l = []
+        for n in self.neighbors:
+            l.append(n.getName())
+        return l
+
 class Graph:
 
     def __init__(self, n, e, win):
@@ -83,29 +89,91 @@ class Graph:
         for node in self.nodes:
             node.draw(win)
             node.color("white")
-            print(str(node.calcDegree()) + " : " + node.getName())
+            #print(str(node.calcDegree()) + " : " + node.getName())
 
+    def minDegree(self):
+        minD = 100
+        for node in self.nodes:
+            if node.calcDegree() < minD:
+                minD = node.calcDegree()
+        return minD
+
+    def maxDegree(self):
+        maxD = 0
+        for node in self.nodes:
+            if node.calcDegree() > maxD:
+                maxD = node.calcDegree()
+        return maxD
+    
     def delete(self):
         for e in self.E:
             e.undraw()
         for n in self.nodes:
             n.undraw()
+
+    def hasCycle(self):
+        for n in self.nodes:
+            #call traverse graph (recursive function) on each node in the graph
+            #if it is every true (cycle found) return true.
+            if self.traverseGraph(n, n, []):
+                return True
+        # if it never returned true, there was never a cycle
+        return False
+                        
+    def traverseGraph(self, current, previous, visited):
+        #base case -- dead end
+        if len(current.getNeighbors()) <= 1:
+            return False
+
+        #see possible neighbors to still visit
+        check = []
+        for node in current.getNeighbors():
+            # return true if one of the neighbors has been previously visited
+            if (node in visited) and (node != previous):
+                return True
+            #otherwise, add unvisited nodes to a list to traverse
+            elif node != previous:
+                check.append(node)
+                
+        #update visited nodes  
+        visited.append(previous)
+        for node in check:
+            #recursive call on each new unvisited neighbor
+            if self.traverseGraph(node, current, visited):
+                return True
+        return False
+                
         
         
 def main():
 
     win = GraphWin("Graph Example", 800, 600)
+    #buttons
     Q = Button(win, Point(20, 530), Point(100, 590), "tomato", "QUIT!")
     Gen = Button(win, Point(20, 430), Point(100, 490), "cyan", "Generate!")
+    AddNode = Button(win, Point(20, 330), Point(100, 390), "beige", "Add Node")
+    Degrees = Button(win, Point(20, 230), Point(100, 290), "beige", "Calc Degrees")
+    Cycle = Button(win, Point(20, 130), Point(100, 190), "beige", "Has Cycle?")
+    
     G = Graph(1, 0, win)
     while True:
         m = win.getMouse()
         if Q.isClicked(m):
             break
+        if Degrees.isClicked(m):
+            print("Minimum Degree: " + str(G.minDegree()))
+            print("Maximum Degree: " + str(G.maxDegree()))
+        if Cycle.isClicked(m):
+            if G.hasCycle():
+                print("The graph has a cycle")
+            else:
+                print("The graph does not have a cycle")
         if Gen.isClicked(m):
+            print("\n===================================\n")
             G.delete()
             #GRaph made with number of nodes and number of edges
-            G = Graph(4, 4, win)
+            G = Graph(5, 4, win)
+            
     win.close()
 
 if __name__ == "__main__":
