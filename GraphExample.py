@@ -49,7 +49,7 @@ class Graph:
         self.E = []
         Xpositions = []
         Ypositions = []
-        names = ["A", "B", "C", "D", "E", "F", "G", "H", "I"]
+        self.names = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"]
         numN = 0
         while True:
             x = random.randint(140, 740)
@@ -63,7 +63,7 @@ class Graph:
             if foundNode:
                 Xpositions.append(x)
                 Ypositions.append(y)
-                name = names[numN]
+                name = self.names.pop(0)
                 N = Node(x, y, win, name)
                 self.nodes.append(N)
                 numN += 1
@@ -90,7 +90,25 @@ class Graph:
             node.draw(win)
             node.color("white")
             #print(str(node.calcDegree()) + " : " + node.getName())
-
+            
+    def addNode(self, win):
+        m = win.getMouse()
+        x = m.getX()
+        y = m.getY()
+        name = self.names.pop(0)
+        N = Node(x, y, win, name)
+        neighbor = random.choice(self.nodes)
+        N.addNeighbor(neighbor)
+        neighbor.addNeighbor(N)
+        self.nodes.append(N)
+        L = Line(Point(x, y), neighbor.getCenter())
+        L.draw(win)
+        self.E.append(L)
+        neighbor.undraw()
+        neighbor.draw(win)
+        N.draw(win)
+        N.color("white")
+    
     def minDegree(self):
         minD = 100
         for node in self.nodes:
@@ -173,6 +191,8 @@ def main():
             G.delete()
             #GRaph made with number of nodes and number of edges
             G = Graph(5, 4, win)
+        if AddNode.isClicked(m):
+            G.addNode(win)
             
     win.close()
 
